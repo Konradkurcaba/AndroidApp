@@ -51,17 +51,21 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         rv = (RecyclerView) findViewById(R.id.recycler_view);
-        ma = new DietAdapter(dietList);
+        ma = new DietAdapter(dietList,this);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         rv.setLayoutManager(mLayoutManager);
         rv.setItemAnimator(new DefaultItemAnimator());
         rv.setAdapter(ma);
 
-        Diet diet = new Diet("Sniadanie","Chleb z masłem");
-        dietList.add(diet);
-        dietList.add(diet);
-        dietList.add(diet);
+        Diet sniadanie = new Diet("Sniadanie","Chleb z masłem", "Razowy chleb ( 150g ) pokryty masłem ( 50g )" +
+                ", szklanka wody ( 250 ml ) ");
+        dietList.add(sniadanie);
+        Diet obiad = new Diet("Obiad","Zupa pomidorowa", "Zupa pomidorowa ( 300g ) sok pomaranczowy ( 250ml )");
+        dietList.add(obiad);
+        Diet kolacja = new Diet("Kolacja","Chleb z masłem", "Razowy chleb ( 150g ) pokryty masłem ( 50g )" +
+                ", szklanka wody ( 250 ml ) ");
+        dietList.add(kolacja);
     }
 
     @Override
