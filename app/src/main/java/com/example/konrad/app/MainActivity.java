@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity
     private RecyclerView rv;
     private DietAdapter ma;
     private List<Diet> dietList = new ArrayList<>();
+    private DatabaseHelper db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,14 +60,13 @@ public class MainActivity extends AppCompatActivity
         rv.setItemAnimator(new DefaultItemAnimator());
         rv.setAdapter(ma);
 
-        Diet sniadanie = new Diet("Sniadanie","Chleb z masłem", "Razowy chleb ( 150g ) pokryty masłem ( 50g )" +
-                ", szklanka wody ( 250 ml ) ");
-        dietList.add(sniadanie);
-        Diet obiad = new Diet("Obiad","Zupa pomidorowa", "Zupa pomidorowa ( 300g ) sok pomaranczowy ( 250ml )");
-        dietList.add(obiad);
-        Diet kolacja = new Diet("Kolacja","Chleb z masłem", "Razowy chleb ( 150g ) pokryty masłem ( 50g )" +
-                ", szklanka wody ( 250 ml ) ");
-        dietList.add(kolacja);
+        db = new DatabaseHelper(this);
+
+
+        db.getDiets(dietList);
+        ma.notifyDataSetChanged();
+
+
     }
 
     @Override
