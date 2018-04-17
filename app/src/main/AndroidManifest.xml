@@ -22,10 +22,8 @@
         <activity
             android:name=".DietProperties"
             android:label="@string/title_activity_diet_properties"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".Add_meal"></activity>
     </application>
 
 </manifest>

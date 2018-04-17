@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.List;
 
 public class DietAdapter extends RecyclerView.Adapter<DietAdapter.MyViewHolder> {
@@ -23,7 +24,6 @@ public class DietAdapter extends RecyclerView.Adapter<DietAdapter.MyViewHolder> 
             view.setOnClickListener(this);
             title = (TextView) view.findViewById(R.id.title);
             summary = (TextView) view.findViewById(R.id.summary);
-
 
         }
 

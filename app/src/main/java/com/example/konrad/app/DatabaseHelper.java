@@ -19,6 +19,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public DatabaseHelper(Context context)
     {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+
     }
 
     @Override
@@ -48,6 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void getDiets(List<Diet> list)
     {
+        list.clear();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query("Diets",new String[]{"tittle","summary","description"},null,null,null,null,null);
         if(cursor != null) {
