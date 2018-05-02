@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION=1;
+    private static final int DATABASE_VERSION=2;
     private static final String DATABASE_NAME = "diets_db";
 
 
@@ -24,13 +24,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String create = "CREATE TABLE Diets(id INTEGER PRIMARY KEY AUTOINCREMENT,tittle TEXT,summary TEXT,description TEXT)";
+        String create = "CREATE TABLE Diets(id INTEGER PRIMARY KEY AUTOINCREMENT,tittle TEXT,summary TEXT,description TEXT,dateTimeStamp LONG)";
         db.execSQL(create);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + DATABASE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + "Diets");
         // Create tables again
         onCreate(db);
     }
@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("tittle",diet.getTitle());
         values.put("summary",diet.getSummary());
         values.put("description",diet.getDesctiption());
-
+        values.put("dateTimeStamp",diet.getMealDate());
         long id = db.insert("Diets",null,values);
         return id;
     }
@@ -51,12 +51,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     {
         list.clear();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query("Diets",new String[]{"tittle","summary","description"},null,null,null,null,null);
-        if(cursor != null) {
-            cursor.moveToFirst();
+        Cursor cursor = db.query("Diets",new String[]{"tittle","summary","description","dateTimeStamp"},null,null,null,null,null);
+        if(cursor != null && cursor.moveToFirst() ) {
 
             do {
-                Diet diet = new Diet(cursor.getString(0),cursor.getString(1),cursor.getString(2));
+                Diet diet = new Diet(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getLong(3));
                 list.add(diet);
 
             } while (cursor.moveToNext());

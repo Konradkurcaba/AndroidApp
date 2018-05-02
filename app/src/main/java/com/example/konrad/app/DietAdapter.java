@@ -15,6 +15,7 @@ public class DietAdapter extends RecyclerView.Adapter<DietAdapter.MyViewHolder> 
 
     private List<Diet> dietList;
     private MainActivity m;
+
     public class MyViewHolder extends RecyclerView.ViewHolder
         implements View.OnClickListener {
         public TextView title, summary;
@@ -28,12 +29,12 @@ public class DietAdapter extends RecyclerView.Adapter<DietAdapter.MyViewHolder> 
         }
 
         @Override
-        public void onClick(View v) {
+        public void onClick(View v) { // start DietProperties activity
         Intent myIntent = new Intent(m, DietProperties.class);
         myIntent.putExtra("title",dietList.get(getAdapterPosition()).getTitle());
         myIntent.putExtra("summary",dietList.get(getAdapterPosition()).getSummary());
         myIntent.putExtra("description",dietList.get(getAdapterPosition()).getDesctiption());
-
+        myIntent.putExtra("mealDate",dietList.get(getAdapterPosition()).getMealDate());
         m.startActivity(myIntent);
         }
     }

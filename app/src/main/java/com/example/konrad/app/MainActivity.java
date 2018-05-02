@@ -7,7 +7,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,79 +16,66 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private RecyclerView rv;
+    private RecyclerView allMealsRecycler;
+    private DietAdapter dietAdpater;
 
-
-    private DietAdapter ma;
     private List<Diet> dietList = new ArrayList<>();
+
     private DatabaseHelper db;
 
     public DietAdapter getMa() {
-        return ma;
+        return dietAdpater;
     }
-
     public List<Diet> getDietList() {
         return dietList;
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //setup activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //change toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
+        // ???
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
+        // for open add meal activity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        rv = (RecyclerView) findViewById(R.id.recycler_view);
-        ma = new DietAdapter(dietList,this);
-
+        //setup recycler with all meals list
+        allMealsRecycler = (RecyclerView) findViewById(R.id.recycler_view);
+        dietAdpater = new DietAdapter(dietList,this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        rv.setLayoutManager(mLayoutManager);
-        rv.setItemAnimator(new DefaultItemAnimator());
-        rv.setAdapter(ma);
+        allMealsRecycler.setLayoutManager(mLayoutManager);
+        allMealsRecycler.setItemAnimator(new DefaultItemAnimator());
+        allMealsRecycler.setAdapter(dietAdpater);
 
+        //get meals from local database
         db = new DatabaseHelper(this);
-
-
         db.getDiets(dietList);
-        ma.notifyDataSetChanged();
-
-
+        dietAdpater.notifyDataSetChanged();
     }
 
     @Override
-    protected void onResume() {
+    protected void onResume() { // refresh meals list
         super.onResume();
         db.getDiets(dietList);
-        ma.notifyDataSetChanged();
+        dietAdpater.notifyDataSetChanged();
     }
 
     @Override
@@ -124,6 +110,7 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
+    // open add meal activity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
