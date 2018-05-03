@@ -22,8 +22,11 @@
         <activity
             android:name=".DietProperties"
             android:label="@string/title_activity_diet_properties"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".Add_meal"></activity>
-    </application>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Add_meal" />
+        <activity android:name=".Login"></activity>
 
+    </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>
