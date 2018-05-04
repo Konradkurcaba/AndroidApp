@@ -1,58 +1,80 @@
 package com.example.konrad.app;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-
-import android.support.v4.app.FragmentActivity;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class Login extends FragmentActivity implements DownloadCallback {
+import java.io.IOException;
+import java.net.Socket;
 
+public class Login extends AppCompatActivity implements NetworksCallbacks{
 
-    private NetworkFragment mNetworkFragment;
+    private Socket socket;
 
-    private boolean mDownloading;
+    private static final int SERVERPORT = 2500;
+    private static final String SERVERIP = "10.0.2.2";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        mNetworkFragment = NetworkFragment.getInstance(getFragmentManager(),"http://www.google.pl");
+        connect();
     }
 
-    private void startDownload(){
-        if(!mDownloading && mNetworkFragment != null)
+    private void connect()
+    {
+        ConnectToServer connectTask = new ConnectToServer(SERVERIP,SERVERPORT,this);
+        connectTask.execute();
+    }
+
+    public void connectResult(Socket socket)
+    {
+        if(this.socket != null) {
+            this.socket = socket;
+        }else
         {
-            mNetworkFragment.startDownload();
-            mDownloading = true;
+            // to do when connect failed
+            System.out.print("Connect failed");
         }
+    }
 
+
+}
+
+class ConnectToServer extends AsyncTask<String,Integer,Void>
+{
+
+    private Socket socket;
+    private final String SERVERIP;
+    private final int SERVERPORT;
+    private final NetworksCallbacks callback;
+
+    ConnectToServer(String serverIp,int serverPort,NetworksCallbacks callback)
+    {
+        this.SERVERIP = serverIp;
+        this.SERVERPORT = serverPort;
+        this.callback = callback;
+    }
+
+
+    @Override
+    protected Void doInBackground(String... strings) {
+        try {
+
+            socket = new Socket(SERVERIP, SERVERPORT);
+
+        }catch(IOException e)
+        {
+            socket = null;
+            System.out.print(e.getMessage());
+        }
+        return null;
     }
 
     @Override
-    public void updateFromDownload(Object result) { // update ui after download
-
-    }
-
-    @Override
-    public NetworkInfo getActiveNetworkInfo() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo;
-    }
-
-    @Override
-    public void onProgressUpdate(int progressCode, int percentComplete) { // update UI on progress
-
-    }
-
-    @Override
-    public void finishDownloading() {
-        mDownloading = false;
-        if (mNetworkFragment != null) mNetworkFragment.cancelDownload();
-
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        callback.connectResult(socket);
     }
 }
