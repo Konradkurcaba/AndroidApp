@@ -1,6 +1,8 @@
 package com.example.konrad.app;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -8,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.Calendar;
@@ -18,6 +21,7 @@ public class DietProperties extends AppCompatActivity {
 
     private TextView summaryTextView;
     private TextView desctiptionTextView;
+    private ImageView mealImageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +40,7 @@ public class DietProperties extends AppCompatActivity {
         String summary = i.getStringExtra("summary");
         String description = i.getStringExtra("description");
         Long mealDate = i.getLongExtra("mealDate",0);
+        String imagePath = i.getStringExtra("imagePath");
 
         //write diet fields into TextViews
         summaryTextView = (TextView) findViewById(R.id.desc);
@@ -44,11 +49,22 @@ public class DietProperties extends AppCompatActivity {
         desctiptionTextView.setText(description);
         desctiptionTextView.setVisibility(TextView.VISIBLE);
 
+
         //Create bar string, and get date from Unix time
         Calendar cal = Calendar.getInstance(Locale.ENGLISH);
         cal.setTimeInMillis(mealDate);
         String barDescription = String.format("%-45s%8s",title, DateFormat.format("dd-MM-yyyy", cal).toString());
         setTitle(barDescription);
+
+        //display meal image or hide ImageView
+        mealImageView = (ImageView) findViewById(R.id.mealImageView);
+        if(imagePath != null && imagePath.length() > 0)
+        {
+
+            Bitmap mealImage = BitmapFactory.decodeFile(imagePath);
+            mealImageView.setImageBitmap(mealImage);
+
+        }else mealImageView.setVisibility(View.GONE);
     }
 
 }

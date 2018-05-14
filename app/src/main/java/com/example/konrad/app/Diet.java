@@ -9,6 +9,9 @@ public class Diet {
     private String summary;
     private String desctiption;
     private Long mealDate;
+    private String imagePath;
+
+
 
     public Long getMealDate() {
         return mealDate;
@@ -17,11 +20,6 @@ public class Diet {
     public String getDesctiption() {
         return desctiption;
     }
-
-    public void setDesctiption(String desctiption) {
-        this.desctiption = desctiption;
-    }
-
 
     public String getTitle() {
         return title;
@@ -39,11 +37,20 @@ public class Diet {
         this.summary = summary;
     }
 
-    public Diet(String title, String summary, String desctiption,Long date) {
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
+    }
+
+    public Diet(String title, String summary, String desctiption, Long date,String imagePath) {
         this.title = title;
         this.summary = summary;
         this.desctiption = desctiption;
         this.mealDate = date;
+        this.imagePath = imagePath;
 
     }
 

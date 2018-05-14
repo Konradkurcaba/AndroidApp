@@ -31,10 +31,12 @@ public class DietAdapter extends RecyclerView.Adapter<DietAdapter.MyViewHolder> 
         @Override
         public void onClick(View v) { // start DietProperties activity
         Intent myIntent = new Intent(m, DietProperties.class);
+
         myIntent.putExtra("title",dietList.get(getAdapterPosition()).getTitle());
         myIntent.putExtra("summary",dietList.get(getAdapterPosition()).getSummary());
         myIntent.putExtra("description",dietList.get(getAdapterPosition()).getDesctiption());
         myIntent.putExtra("mealDate",dietList.get(getAdapterPosition()).getMealDate());
+        myIntent.putExtra("imagePath",dietList.get(getAdapterPosition()).getImagePath());
         m.startActivity(myIntent);
         }
     }

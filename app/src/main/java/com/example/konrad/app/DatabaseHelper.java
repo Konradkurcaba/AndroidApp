@@ -6,13 +6,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION=2;
+    private static final int DATABASE_VERSION=4;
     private static final String DATABASE_NAME = "diets_db";
 
 
@@ -24,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String create = "CREATE TABLE Diets(id INTEGER PRIMARY KEY AUTOINCREMENT,tittle TEXT,summary TEXT,description TEXT,dateTimeStamp LONG)";
+        String create = "CREATE TABLE Diets(id INTEGER PRIMARY KEY AUTOINCREMENT,tittle TEXT,summary TEXT,description TEXT,dateTimeStamp LONG,imagePath String)";
         db.execSQL(create);
     }
 
@@ -43,24 +48,83 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put("summary",diet.getSummary());
         values.put("description",diet.getDesctiption());
         values.put("dateTimeStamp",diet.getMealDate());
+        values.put("imagePath", diet.getImagePath());
         long id = db.insert("Diets",null,values);
         return id;
     }
 
     public void getDiets(List<Diet> list)
     {
+
         list.clear();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query("Diets",new String[]{"tittle","summary","description","dateTimeStamp"},null,null,null,null,null);
+        Cursor cursor = db.query("Diets",new String[]{"tittle","summary","description","dateTimeStamp","imagePath"},null,null,null,null,null);
         if(cursor != null && cursor.moveToFirst() ) {
 
             do {
-                Diet diet = new Diet(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getLong(3));
+                Diet diet = new Diet(cursor.getString(0),cursor.getString(1),cursor.getString(2),
+                        cursor.getLong(3),cursor.getString(4));
                 list.add(diet);
 
             } while (cursor.moveToNext());
 
         }
 
+        Collections.sort(list,(Diet firstMeal, Diet secondMeal) -> {
+
+            int firstMealIntValue = mealToIntValueConversion(firstMeal.getTitle());
+            int secondMealIntValue = mealToIntValueConversion(secondMeal.getTitle());
+
+            return firstMealIntValue - secondMealIntValue;
+
+
+
+        });
+
+    }
+
+    private int mealToIntValueConversion(String title)
+    {
+        int mealIntValue = 0;
+
+        switch(title) {
+            case "Sniadanie":
+                mealIntValue = 1;
+                break;
+            case "Drugie Sniadanie":
+                mealIntValue = 2;
+                break;
+            case "Obiad":
+                mealIntValue = 3;
+                break;
+            case "Podwieczorek":
+                mealIntValue = 4;
+                break;
+            case "Kolacja":
+                mealIntValue = 5;
+                break;
+            default: mealIntValue = 6;
+
+        }
+        return mealIntValue;
+    }
+    private long dateToMilliseconds(String date)
+    {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        try
+        {
+            Date mDate = sdf.parse(date);
+            long timeInMilliseconds = mDate.getTime();
+            System.out.println("Date in milli :: " + timeInMilliseconds);
+            return timeInMilliseconds;
+        }
+        catch (ParseException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        return 0;
     }
 }
