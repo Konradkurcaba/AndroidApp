@@ -4,6 +4,6 @@ import java.net.Socket;
 
 public interface NetworksCallbacks {
 
-    public void connectResult(Socket socket);
+    void connectResult(Socket socket);
 
 }
