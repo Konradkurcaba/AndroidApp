@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,6 +32,7 @@ public class Add_meal extends AppCompatActivity {
     private DatePicker picker;
     private int PICK_IMAGE_REQUEST = 1;
     private ImageView imageView;
+
 
     private Bitmap mealImage = null;
 
@@ -51,7 +53,7 @@ public class Add_meal extends AppCompatActivity {
 
         // Setup spinner with chose meal kind
         mealKindSpinner = findViewById(R.id.mealKindSpinner);
-        String[] items = new String[]{"Sniadanie", "Drugie Sniadanie", "Obiad", "Podwieczorek", "Kolacja"};
+        String[] items = new String[]{"Sniadanie", "II Sniadanie", "Obiad", "Podwieczorek", "Kolacja"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, items);
         mealKindSpinner.setAdapter(adapter);
 
@@ -71,15 +73,32 @@ public class Add_meal extends AppCompatActivity {
             public void onClick(View v) {
                 picker.show(getFragmentManager(),"date");
             }
-        });
+        }
+        );
 
         // Setup add meal button
         add_meal_button = (Button) findViewById(R.id.button);
-        add_meal_button.setOnClickListener((event) -> {
-            addMealToDatabase();
+        add_meal_button.setOnClickListener(new View.OnClickListener(){
+
+            public void onClick(View event) {
+                Toast.makeText(getApplicationContext(),
+                        "Dodano nowy przepis!", Toast.LENGTH_SHORT).show();
+                addMealToDatabase();
+            }
         });
 
     }
+
+    View.OnClickListener buttonOnClicked = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(getApplicationContext(),
+                    "Dodano nowy przepis!", Toast.LENGTH_SHORT).show();
+        }
+    };
+
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -129,6 +148,7 @@ public class Add_meal extends AppCompatActivity {
         db.instertDiet(diet);
 
     }
+
     private void loadImageFromStorage()
     {
         Intent intent = new Intent();

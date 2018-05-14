@@ -6,12 +6,26 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_create"
-            android:icon="@drawable/ic_create"
-            android:title="Dodaj własny posiłek" />
+            android:icon="@drawable/ic_list"
+            android:title="Spis diety" />
+        <item
+            android:id="@+id/nav_create"
+            android:icon="@drawable/ic_add"
+            android:title="Dodaj własny przepis" />
         <item
             android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
             android:title="Ustawienia" />
+    </group>
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_login"
+            android:title="Logowanie" />
+        <item
+            android:id="@+id/nav_manage"
+            android:icon="@drawable/ic_register"
+            android:title="Rejestracja" />
     </group>
 
 

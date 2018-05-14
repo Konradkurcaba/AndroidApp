@@ -91,7 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             case "Sniadanie":
                 mealIntValue = 1;
                 break;
-            case "Drugie Sniadanie":
+            case "II Sniadanie":
                 mealIntValue = 2;
                 break;
             case "Obiad":
