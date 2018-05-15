@@ -35,8 +35,10 @@
             android:background="@drawable/buttonshape"
             android:text="Wybierz obraz"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:layout_gravity="center_vertical|center_horizontal"
             android:textSize="16sp"
-            android:visibility="visible" />
+            android:visibility="visible"
+            />
 
         <Spinner
             android:id="@+id/mealKindSpinner"
@@ -73,7 +75,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/buttonshape"
-
+                    android:layout_gravity="center_vertical|center_horizontal"
                     android:text="Wybierz date"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="16sp"
@@ -85,7 +87,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@drawable/buttonshape"
-
+                    android:layout_gravity="center_vertical|center_horizontal"
                     android:onClick="showMessage"
                     android:text="Dodaj posiłek"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
