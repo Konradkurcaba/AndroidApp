@@ -28,20 +28,14 @@
             </intent-filter>
         </activity>
         <activity
-
             android:name=".DietProperties"
             android:label="@string/title_activity_diet_properties"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Add_meal" />
-        <activity
-            android:name="com.yalantis.ucrop.UCropActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
         <activity android:name=".Login" />
-        <activity android:name=".RegisterActivity">
-
-        </activity>
-
+        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".CropImageActivity"></activity>
     </application>
 
 </manifest>

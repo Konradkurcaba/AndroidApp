@@ -21,7 +21,7 @@
         <ImageView
             android:id="@+id/mealView"
             android:layout_width="match_parent"
-            android:layout_height="385px"
+            android:layout_height="720px"
             android:layout_weight="1"
             android:visibility="visible"
             app:srcCompat="@mipmap/ic_launcher" />
@@ -93,7 +93,13 @@
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                     android:textSize="16sp"
                     android:visibility="visible" />
-
+                <!-- Image Cropper fill the remaining available height -->
+                <com.theartofdev.edmodo.cropper.CropImageView
+                    xmlns:custom="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/cropImageView"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"/>
 
             </android.support.design.widget.TextInputLayout>
         </android.support.design.widget.TextInputLayout>
