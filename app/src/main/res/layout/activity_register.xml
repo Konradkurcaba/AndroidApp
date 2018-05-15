@@ -46,15 +46,17 @@
                 android:layout_height="wrap_content"
                 android:hint="Powtórz hasło"
                 android:inputType="textPassword" />
-        <Button
-            android:id="@+id/registerButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|center_horizontal"
-            android:background="@drawable/buttonshape"
-            android:text="Zatwierdź"
-            tools:layout_editor_absoluteX="122dp"
-            tools:layout_editor_absoluteY="122dp" />
+
+            <Button
+                android:id="@+id/registerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|center_horizontal"
+                android:background="@drawable/buttonshape"
+                android:text="Zatwierdź"
+                android:textColor="@android:color/white"
+                tools:layout_editor_absoluteX="122dp"
+                tools:layout_editor_absoluteY="122dp" />
 
         </android.support.design.widget.TextInputLayout>
     </android.support.design.widget.TextInputLayout>

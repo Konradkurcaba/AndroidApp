@@ -29,16 +29,17 @@
         <Button
             android:id="@+id/imagePicker"
             style="@style/Widget.AppCompat.Button.Small"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|center_horizontal"
             android:layout_weight="0"
             android:background="@drawable/buttonshape"
             android:text="Wybierz obraz"
+            android:textAllCaps="true"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-            android:layout_gravity="center_vertical|center_horizontal"
+            android:textColor="@android:color/white"
             android:textSize="16sp"
-            android:visibility="visible"
-            />
+            android:visibility="visible" />
 
         <Spinner
             android:id="@+id/mealKindSpinner"
@@ -72,25 +73,29 @@
                 <Button
                     android:id="@+id/dateButton"
                     style="@style/Widget.AppCompat.Button.Small"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/buttonshape"
                     android:layout_gravity="center_vertical|center_horizontal"
+                    android:background="@drawable/buttonshape"
                     android:text="Wybierz date"
+                    android:textAllCaps="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:visibility="visible" />
 
                 <Button
                     android:id="@+id/button"
                     style="@style/Widget.AppCompat.Button.Small"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/buttonshape"
                     android:layout_gravity="center_vertical|center_horizontal"
+                    android:background="@drawable/buttonshape"
                     android:onClick="showMessage"
                     android:text="Dodaj posiłek"
+                    android:textAllCaps="true"
                     android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:visibility="visible" />
 
