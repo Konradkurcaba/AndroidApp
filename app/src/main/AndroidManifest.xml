@@ -8,7 +8,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -28,11 +28,20 @@
             </intent-filter>
         </activity>
         <activity
+
             android:name=".DietProperties"
             android:label="@string/title_activity_diet_properties"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Add_meal" />
-        <activity android:name=".Login"></activity>
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+        <activity android:name=".Login" />
+        <activity android:name=".RegisterActivity">
+
+        </activity>
+
     </application>
 
 </manifest>

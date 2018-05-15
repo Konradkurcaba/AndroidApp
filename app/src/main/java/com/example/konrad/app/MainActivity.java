@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     // open add meal activity
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -122,11 +121,15 @@ public class MainActivity extends AppCompatActivity
             Intent myIntent = new Intent(this, Add_meal.class);
             this.startActivity(myIntent);
 
-
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.nav_login) {
             Intent myIntent = new Intent(this,Login.class);
             this.startActivity(myIntent);
+
+        } else if (id == R.id.nav_register) {
+            Intent myIntent = new Intent(this,RegisterActivity.class);
+            this.startActivity(myIntent);
         }
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

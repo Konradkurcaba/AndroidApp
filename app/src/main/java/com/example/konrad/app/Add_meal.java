@@ -4,6 +4,7 @@ package com.example.konrad.app;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
+
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
@@ -16,10 +17,14 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.yalantis.ucrop.UCrop;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 
 public class Add_meal extends AppCompatActivity {
@@ -113,13 +118,19 @@ public class Add_meal extends AppCompatActivity {
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
 
+
             Uri uri = data.getData();
+            Long uniqueFileName = System.currentTimeMillis();
+            File file = new File(getApplicationContext().getFilesDir(), uniqueFileName.toString());
+
 
             try {
+
+                performCrop(uri,android.net.Uri.parse(file.toString()));
                 mealImage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 // Log.d(TAG, String.valueOf(bitmap));
 
-                performCrop(uri);
+
 
                 imageView.setImageBitmap(mealImage);
                 imageView.setVisibility(View.VISIBLE);
@@ -127,6 +138,7 @@ public class Add_meal extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
         }
 
         if (requestCode == PIC_CROP && resultCode == RESULT_OK && data != null && data.getData() != null )
@@ -144,31 +156,14 @@ public class Add_meal extends AppCompatActivity {
 
     }
 
-    private void performCrop(Uri picUri) {
-        try {
-            Intent cropIntent = new Intent("com.android.camera.action.CROP");
-            // indicate image type and Uri
-            cropIntent.setDataAndType(picUri, "image/*");
-            // set crop properties here
-            cropIntent.putExtra("crop", true);
-            // indicate aspect of desired crop
-            cropIntent.putExtra("aspectX", 1);
-            cropIntent.putExtra("aspectY", 1);
-            // indicate output X and Y
-            cropIntent.putExtra("outputX", 128);
-            cropIntent.putExtra("outputY", 128);
-            // retrieve data on return
-            cropIntent.putExtra("return-data", true);
-            // start the activity - we handle returning in onActivityResult
-            startActivityForResult(cropIntent, PIC_CROP);
-        }
-        // respond to users whose devices do not support the crop action
-        catch (ActivityNotFoundException anfe) {
-            // display an error message
-            String errorMessage = "Whoops - your device doesn't support the crop action!";
-            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
-            toast.show();
-        }
+    private void performCrop(Uri picUri,Uri destinationUri) {
+
+        UCrop.of(picUri, destinationUri)
+                .withAspectRatio(16, 9)
+                .withMaxResultSize(1024, 1024)
+                .start(this);
+
+
     }
     private void addMealToDatabase()
     {
@@ -176,17 +171,6 @@ public class Add_meal extends AppCompatActivity {
 
         if(mealImage != null)
         {
-            try {
-                Long uniqueFileName = System.currentTimeMillis();
-                File file = new File(getApplicationContext().getFilesDir(), uniqueFileName.toString());
-                OutputStream saveImageOutputStream = new FileOutputStream(file);
-                mealImage.compress(Bitmap.CompressFormat.JPEG,85,saveImageOutputStream);
-                imageFilePath = file.getPath().toString();
-            }
-            catch(IOException exception)
-            {
-
-            }
 
         }
 
