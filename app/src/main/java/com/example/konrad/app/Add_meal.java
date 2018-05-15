@@ -1,6 +1,7 @@
 package com.example.konrad.app;
 
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -30,7 +31,8 @@ public class Add_meal extends AppCompatActivity {
     private Button mealDateButton;
     private Button add_meal_button;
     private DatePicker picker;
-    private int PICK_IMAGE_REQUEST = 1;
+    private final int PICK_IMAGE_REQUEST = 1;
+    private final int PIC_CROP = 2;
     private ImageView imageView;
 
 
@@ -81,9 +83,14 @@ public class Add_meal extends AppCompatActivity {
         add_meal_button.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View event) {
+                addMealToDatabase();
                 Toast.makeText(getApplicationContext(),
                         "Dodano nowy przepis!", Toast.LENGTH_SHORT).show();
-                addMealToDatabase();
+                summary_input.setText("");
+                descritpion_input.setText("");
+                mealImage = null;
+                imageView.setVisibility(View.GONE);
+
             }
         });
 
@@ -112,6 +119,7 @@ public class Add_meal extends AppCompatActivity {
                 mealImage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                 // Log.d(TAG, String.valueOf(bitmap));
 
+                performCrop(uri);
 
                 imageView.setImageBitmap(mealImage);
                 imageView.setVisibility(View.VISIBLE);
@@ -121,6 +129,46 @@ public class Add_meal extends AppCompatActivity {
             }
         }
 
+        if (requestCode == PIC_CROP && resultCode == RESULT_OK && data != null && data.getData() != null )
+        {
+
+            // get the returned data
+            Bundle extras = data.getExtras();
+            // get the cropped bitmap
+            mealImage = extras.getParcelable("data");
+
+
+        }
+
+
+
+    }
+
+    private void performCrop(Uri picUri) {
+        try {
+            Intent cropIntent = new Intent("com.android.camera.action.CROP");
+            // indicate image type and Uri
+            cropIntent.setDataAndType(picUri, "image/*");
+            // set crop properties here
+            cropIntent.putExtra("crop", true);
+            // indicate aspect of desired crop
+            cropIntent.putExtra("aspectX", 1);
+            cropIntent.putExtra("aspectY", 1);
+            // indicate output X and Y
+            cropIntent.putExtra("outputX", 128);
+            cropIntent.putExtra("outputY", 128);
+            // retrieve data on return
+            cropIntent.putExtra("return-data", true);
+            // start the activity - we handle returning in onActivityResult
+            startActivityForResult(cropIntent, PIC_CROP);
+        }
+        // respond to users whose devices do not support the crop action
+        catch (ActivityNotFoundException anfe) {
+            // display an error message
+            String errorMessage = "Whoops - your device doesn't support the crop action!";
+            Toast toast = Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
     private void addMealToDatabase()
     {
