@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
@@ -17,14 +18,15 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.yalantis.ucrop.UCrop;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
+
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 
 
 public class Add_meal extends AppCompatActivity {
@@ -37,10 +39,9 @@ public class Add_meal extends AppCompatActivity {
     private Button add_meal_button;
     private DatePicker picker;
     private final int PICK_IMAGE_REQUEST = 1;
-    private final int PIC_CROP = 2;
     private ImageView imageView;
 
-
+    private Uri imageUri;
     private Bitmap mealImage = null;
 
 
@@ -67,9 +68,7 @@ public class Add_meal extends AppCompatActivity {
         // Setup Image Picker button
         Button imagePickButton = (Button) findViewById(R.id.imagePicker);
         imagePickButton.setOnClickListener((event) -> {
-
-            loadImageFromStorage();
-
+            loadAndResizeImage();
         });
 
         //Setup button with Date picker
@@ -88,13 +87,20 @@ public class Add_meal extends AppCompatActivity {
         add_meal_button.setOnClickListener(new View.OnClickListener(){
 
             public void onClick(View event) {
-                addMealToDatabase();
-                Toast.makeText(getApplicationContext(),
-                        "Dodano nowy przepis!", Toast.LENGTH_SHORT).show();
-                summary_input.setText("");
-                descritpion_input.setText("");
-                mealImage = null;
-                imageView.setVisibility(View.GONE);
+
+                try {
+                    addMealToDatabase();
+                    Toast.makeText(getApplicationContext(),
+                            "Dodano nowy przepis!", Toast.LENGTH_SHORT).show();
+                    summary_input.setText("");
+                    descritpion_input.setText("");
+                    mealImage = null;
+                    imageView.setVisibility(View.GONE);
+                }catch (FileNotFoundException exception)
+                {
+                    Toast.makeText(getApplicationContext(),
+                            "Cos poszlo nie tak", Toast.LENGTH_SHORT).show();
+                }
 
             }
         });
@@ -111,69 +117,42 @@ public class Add_meal extends AppCompatActivity {
 
 
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                try {
+                    mealImage = MediaStore.Images.Media.getBitmap(getContentResolver(), resultUri);
+                    mealImage = Bitmap.createScaledBitmap(mealImage,1080,720,true);
+                    imageView.setImageBitmap(mealImage);
+                    imageView.setVisibility(View.VISIBLE);
 
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-
-
-            Uri uri = data.getData();
-            Long uniqueFileName = System.currentTimeMillis();
-            File file = new File(getApplicationContext().getFilesDir(), uniqueFileName.toString());
-
-
-            try {
-
-                performCrop(uri,android.net.Uri.parse(file.toString()));
-                mealImage = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                // Log.d(TAG, String.valueOf(bitmap));
-
-
-
-                imageView.setImageBitmap(mealImage);
-                imageView.setVisibility(View.VISIBLE);
-
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
             }
-
         }
-
-        if (requestCode == PIC_CROP && resultCode == RESULT_OK && data != null && data.getData() != null )
-        {
-
-            // get the returned data
-            Bundle extras = data.getExtras();
-            // get the cropped bitmap
-            mealImage = extras.getParcelable("data");
-
-
-        }
-
-
-
     }
 
-    private void performCrop(Uri picUri,Uri destinationUri) {
-
-        UCrop.of(picUri, destinationUri)
-                .withAspectRatio(16, 9)
-                .withMaxResultSize(1024, 1024)
-                .start(this);
 
 
-    }
-    private void addMealToDatabase()
-    {
+    private void addMealToDatabase() throws FileNotFoundException {
         String imageFilePath = "";
 
         if(mealImage != null)
         {
-
+            Long uniqueFileName = System.currentTimeMillis();
+            File file = new File(getApplicationContext().getFilesDir(), uniqueFileName.toString());
+            OutputStream saveImageOutputStream = new FileOutputStream(file);
+            mealImage.compress(Bitmap.CompressFormat.JPEG,85,saveImageOutputStream);
+            imageFilePath = file.getPath().toString();
         }
-
         Diet diet = new Diet(mealKindSpinner.getSelectedItem().toString(),summary_input.getText().toString(),descritpion_input.getText().toString(),
                 picker.getPickedDate(),imageFilePath );
 
@@ -181,15 +160,10 @@ public class Add_meal extends AppCompatActivity {
 
     }
 
-    private void loadImageFromStorage()
-    {
-        Intent intent = new Intent();
-        // Show only images, no videos or anything else
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        // Always show the chooser (if there are multiple options available)
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
 
+    private void loadAndResizeImage()
+    {
+        CropImage.activity().setAspectRatio(3,2).setFixAspectRatio(true).start(this);
     }
 
 
