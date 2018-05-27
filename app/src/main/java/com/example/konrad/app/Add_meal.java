@@ -18,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
@@ -40,6 +43,7 @@ public class Add_meal extends AppCompatActivity {
     private DatePicker picker;
     private final int PICK_IMAGE_REQUEST = 1;
     private ImageView imageView;
+    private AdView mAdView;
 
     private Uri imageUri;
     private Bitmap mealImage = null;
@@ -47,6 +51,7 @@ public class Add_meal extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
 
 
         super.onCreate(savedInstanceState);
@@ -104,6 +109,11 @@ public class Add_meal extends AppCompatActivity {
 
             }
         });
+        //setup ad banner
+        mAdView = findViewById(R.id.adView);
+        AdRequest adRequest = new AdRequest.Builder().build();
+        mAdView.loadAd(adRequest);
+
 
     }
 

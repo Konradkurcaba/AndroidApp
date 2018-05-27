@@ -1,11 +1,13 @@
 package com.example.konrad.app;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.Serializable;
@@ -26,6 +28,16 @@ public class DietAdapter extends RecyclerView.Adapter<DietAdapter.MyViewHolder> 
             title = (TextView) view.findViewById(R.id.title);
             summary = (TextView) view.findViewById(R.id.summary);
 
+            view.setOnLongClickListener( (event) -> {
+
+                RelativeLayout layout = (RelativeLayout) view;
+                layout.setBackgroundColor(Color.BLACK);
+
+                return true;
+
+            });
+
+
         }
 
         @Override
@@ -39,7 +51,11 @@ public class DietAdapter extends RecyclerView.Adapter<DietAdapter.MyViewHolder> 
         myIntent.putExtra("imagePath",dietList.get(getAdapterPosition()).getImagePath());
         m.startActivity(myIntent);
         }
+
+
+
     }
+
     public DietAdapter(List<Diet> dietList,MainActivity m)
     {
         this.dietList = dietList;
