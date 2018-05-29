@@ -6,7 +6,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DietProperties">
+    tools:context=".DietProperties"
+    android:layout_gravity="center|center_vertical">
 
     <include
         layout="@layout/content_dp_stare"
