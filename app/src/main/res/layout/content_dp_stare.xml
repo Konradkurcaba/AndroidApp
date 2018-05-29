@@ -54,7 +54,7 @@
         tools:text="Składniki: przepis cos tam dgsd gsdm dskfds kaggad dsdgsgsd gsd" />
 
     <Button
-        android:id="@+id/registerButton"
+        android:id="@+id/deleteMealButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|center_horizontal"

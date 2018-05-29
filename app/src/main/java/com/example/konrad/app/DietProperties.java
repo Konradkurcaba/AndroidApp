@@ -10,8 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -22,12 +24,13 @@ public class DietProperties extends AppCompatActivity {
     private TextView summaryTextView;
     private TextView desctiptionTextView;
     private ImageView mealImageView;
+    private DatabaseHelper db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // setup activity
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_diet_properties);
+        setContentView(R.layout.content_dp_stare);
 
         //set toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -36,6 +39,7 @@ public class DietProperties extends AppCompatActivity {
         Intent i = getIntent();
 
         //get diet fields
+        int idMeal = i.getIntExtra("idMeal",0);
         String title = i.getStringExtra("title");
         String summary = i.getStringExtra("summary");
         String description = i.getStringExtra("description");
@@ -65,6 +69,18 @@ public class DietProperties extends AppCompatActivity {
             mealImageView.setImageBitmap(mealImage);
 
         }else mealImageView.setVisibility(View.GONE);
+
+        //add deleted button action
+
+        Button deleteMealButton = (Button) findViewById(R.id.deleteMealButton);
+        deleteMealButton.setOnClickListener(event ->
+        {
+            db = new DatabaseHelper(this);
+            db.deleteDiet(idMeal);
+            Toast.makeText(getApplicationContext(),
+                    "Pomyslnie usunięto przepis", Toast.LENGTH_SHORT).show();
+            finish();
+        });
     }
 
 }

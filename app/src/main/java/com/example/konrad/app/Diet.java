@@ -5,6 +5,7 @@ import java.time.LocalDate;
 
 public class Diet {
 
+    private int id;
     private String title;
     private String summary;
     private String desctiption;
@@ -12,6 +13,13 @@ public class Diet {
     private String imagePath;
 
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public Long getMealDate() {
         return mealDate;

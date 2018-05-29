@@ -61,7 +61,7 @@
             tools:text="Składniki: przepis cos tam dgsd gsdm dskfds kaggad dsdgsgsd gsd" />
 
         <Button
-            android:id="@+id/registerButton"
+            android:id="@+id/deleteMealButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|center_horizontal"
@@ -71,7 +71,8 @@
             android:textColor="@android:color/white"
             android:visibility="visible"
             tools:layout_editor_absoluteX="102dp"
-            tools:layout_editor_absoluteY="447dp" />
+            tools:layout_editor_absoluteY="447dp"
+            tools:ignore="MissingConstraints" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>

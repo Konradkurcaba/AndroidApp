@@ -52,19 +52,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         long id = db.insert("Diets",null,values);
         return id;
     }
+    public void deleteDiet(int idMeal)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.delete("Diets","id=?",new String[]{String.valueOf(idMeal)});
+    }
 
     public void getDiets(List<Diet> list)
     {
 
         list.clear();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query("Diets",new String[]{"tittle","summary","description","dateTimeStamp","imagePath"},null,null,null,null,null);
+        Cursor cursor = db.query("Diets",new String[]{"id","tittle","summary","description","dateTimeStamp","imagePath"},null,null,null,null,null);
         if(cursor != null && cursor.moveToFirst() ) {
 
             do {
-                Diet diet = new Diet(cursor.getString(0),cursor.getString(1),cursor.getString(2),
-                        cursor.getLong(3),cursor.getString(4));
+                Diet diet = new Diet(cursor.getString(1),cursor.getString(2),cursor.getString(3),
+                        cursor.getLong(4),cursor.getString(5));
                 list.add(diet);
+                 diet.setId(cursor.getInt(0));
 
             } while (cursor.moveToNext());
 
