@@ -35,7 +35,6 @@
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
         <activity android:name=".Login" />
         <activity android:name=".RegisterActivity"></activity>
-        <activity android:name=".CropImageActivity"></activity>
     </application>
 
 </manifest>

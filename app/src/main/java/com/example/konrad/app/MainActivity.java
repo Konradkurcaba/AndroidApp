@@ -20,9 +20,16 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+
+
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private InterstitialAd fullScreenAd;
     private RecyclerView allMealsRecycler;
     private DietAdapter dietAdpater;
 
@@ -42,6 +49,19 @@ public class MainActivity extends AppCompatActivity
         //setup activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //setup ad
+        fullScreenAd = new InterstitialAd(this);
+        fullScreenAd.setAdUnitId("ca-app-pub-3940256099942544/1033173712");
+        fullScreenAd.loadAd(new AdRequest.Builder().build());
+        fullScreenAd.setAdListener(new AdListener(){
+               @Override
+               public void onAdLoaded() {
+                   super.onAdLoaded();
+                   fullScreenAd.show();
+               }
+           }
+        );
 
         //change toolbar
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -70,6 +90,10 @@ public class MainActivity extends AppCompatActivity
         db = new DatabaseHelper(this);
         db.getDiets(dietList);
         dietAdpater.notifyDataSetChanged();
+
+
+
+
     }
 
     @Override
