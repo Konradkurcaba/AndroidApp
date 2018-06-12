@@ -88,6 +88,45 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         });
 
     }
+    public void getDietsSpecifiedTime(List<Diet> list, Long date)
+    {
+        list.clear();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("Diets",new String[]{"id","tittle","summary","description","dateTimeStamp","imagePath"},null,null,null,null,null);
+        if(cursor != null && cursor.moveToFirst() ) {
+
+            do {
+                Long mealTime = cursor.getLong(4);
+                String mealDateString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(mealTime));
+                String dateString;
+                if(date != null) {
+                    dateString = new SimpleDateFormat("MM/dd/yyyy").format(new Date(date));
+                }else
+                {
+                    dateString = new SimpleDateFormat("MM/dd/yyyy").format(Calendar.getInstance().getTime());
+                }
+                if(mealDateString.equals(dateString)) {
+                    Diet diet = new Diet(cursor.getString(1), cursor.getString(2), cursor.getString(3),
+                            cursor.getLong(4), cursor.getString(5));
+                    list.add(diet);
+                    diet.setId(cursor.getInt(0));
+                }
+            } while (cursor.moveToNext());
+
+        }
+
+        Collections.sort(list,(Diet firstMeal, Diet secondMeal) -> {
+
+            int firstMealIntValue = mealToIntValueConversion(firstMeal.getTitle());
+            int secondMealIntValue = mealToIntValueConversion(secondMeal.getTitle());
+
+            return firstMealIntValue - secondMealIntValue;
+
+
+
+        });
+
+    }
 
     private int mealToIntValueConversion(String title)
     {

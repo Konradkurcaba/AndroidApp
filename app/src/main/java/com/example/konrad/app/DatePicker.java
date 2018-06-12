@@ -1,5 +1,6 @@
 package com.example.konrad.app;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -11,9 +12,23 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
 
 
     private Long pickedDate;
-
+    private DatePickedCallback callback;
     public Long getPickedDate() {
         return pickedDate;
+    }
+
+
+    @SuppressLint("ValidFragment")
+    public DatePicker(DatePickedCallback callback)
+    {
+        super();
+        this.callback = callback;
+
+    }
+
+    public DatePicker()
+    {
+        super();
     }
 
     @Override
@@ -27,8 +42,6 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
         return new DatePickerDialog(getActivity(),this,year,month,day);
     }
 
-
-
     @Override
     public void onDateSet(android.widget.DatePicker view, int year, int month, int dayOfMonth) {
         Calendar calendar = Calendar.getInstance();
@@ -37,6 +50,7 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
         calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
 
         pickedDate = calendar.getTimeInMillis();
+        callback.DatePicked();
 
     }
 }

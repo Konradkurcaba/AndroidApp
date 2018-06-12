@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import com.google.android.gms.ads.AdListener;
@@ -27,7 +28,8 @@ import com.google.android.gms.ads.InterstitialAd;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        DatePickedCallback {
 
     private InterstitialAd fullScreenAd;
     private RecyclerView allMealsRecycler;
@@ -43,12 +45,17 @@ public class MainActivity extends AppCompatActivity
     public List<Diet> getDietList() {
         return dietList;
     }
+    private DatePicker picker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //setup activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        //setup datepicker
+        picker = new DatePicker(this);
+
 
         //setup ad
         fullScreenAd = new InterstitialAd(this);
@@ -92,8 +99,6 @@ public class MainActivity extends AppCompatActivity
         dietAdpater.notifyDataSetChanged();
 
 
-
-
     }
 
     @Override
@@ -120,6 +125,7 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -127,10 +133,14 @@ public class MainActivity extends AppCompatActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         if (id == R.id.action_calendar) {
+
+
+
+            picker.show(getFragmentManager(),"date");
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -154,8 +164,16 @@ public class MainActivity extends AppCompatActivity
             this.startActivity(myIntent);
         }
 
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void DatePicked() {
+        Long pickerDate = picker.getPickedDate();
+        db.getDietsSpecifiedTime(dietList,pickerDate);
+        dietAdpater.notifyDataSetChanged();
     }
 }
