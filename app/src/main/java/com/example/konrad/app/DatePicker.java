@@ -50,7 +50,9 @@ public class DatePicker extends DialogFragment implements DatePickerDialog.OnDat
         calendar.set(Calendar.DAY_OF_MONTH,dayOfMonth);
 
         pickedDate = calendar.getTimeInMillis();
-        callback.DatePicked();
+        if(callback != null) {
+            callback.DatePicked();
+        }
 
     }
 }
