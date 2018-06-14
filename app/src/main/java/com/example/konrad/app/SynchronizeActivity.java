@@ -20,14 +20,14 @@ public class SynchronizeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_synchronize);
 
-        this.reader = Login.getBufferedReader();
-        this.writer = Login.getWriter();
+        this.reader = User.getSocketReader();
+        this.writer = User.getSocketWriter();
 
         downloadMealsButton = (Button) findViewById(R.id.downloadMealsButton);
         downloadMealsButton.setOnClickListener((event) -> {
 
             try {
-                SyncTask task = new SyncTask(reader,writer, getApplicationContext());
+                DownloadTask task = new DownloadTask(reader,writer, getApplicationContext());
                 task.execute();
             } catch (Exception e) {
                 e.printStackTrace();

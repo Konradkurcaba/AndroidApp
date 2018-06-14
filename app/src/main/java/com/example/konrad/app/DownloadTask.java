@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SyncTask extends AsyncTask<Void,Void,Void>
+public class DownloadTask extends AsyncTask<Void,Void,Void>
 {
 
 
@@ -18,7 +18,7 @@ public class SyncTask extends AsyncTask<Void,Void,Void>
     Context context;
     String syncStatus;
 
-    SyncTask(BufferedReader reader,PrintWriter writer,Context context) throws IOException
+    DownloadTask(BufferedReader reader, PrintWriter writer, Context context) throws IOException
     {
 
         this.context = context;
@@ -99,7 +99,6 @@ public class SyncTask extends AsyncTask<Void,Void,Void>
         return status;
     }
 
-
     private List receiveMealsFromServer() throws IOException
     {
         List receiveMelas = new ArrayList<Diet>();
@@ -117,6 +116,7 @@ public class SyncTask extends AsyncTask<Void,Void,Void>
                 diet.setId(Integer.parseInt(id));
                 receiveMelas.add(diet);
                 status = bufferedReader.readLine();
+
             }while(!status.equals("Endsend"));
             writer.write("OK");
         }
@@ -124,3 +124,4 @@ public class SyncTask extends AsyncTask<Void,Void,Void>
     }
 
 }
+

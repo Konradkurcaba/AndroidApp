@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,24 +29,18 @@ public class Login extends AppCompatActivity implements NetworksCallbacks{
     private Button syncButton;
     private static final int SERVERPORT = 2500;
     private static final String SERVERIP = "10.0.2.2";
-    private boolean loginStatus = false;
-    private static  BufferedReader bufferedReader;
-    private static PrintWriter writer;
 
 
-    public static BufferedReader getBufferedReader() {
-        return bufferedReader;
-    }
-
-    public static PrintWriter getWriter() {
-        return writer;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
+        if(User.getLoginStatus())
+        {
+            Intent i = new Intent(this,SynchronizeActivity.class);
+            this.startActivity(i);
+        }
 
         loginButton = (Button) findViewById(R.id.loginButton);
         loginButton.setOnClickListener(new View.OnClickListener() {
@@ -59,15 +54,8 @@ public class Login extends AppCompatActivity implements NetworksCallbacks{
 
     }
 
-    @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        if(loginStatus)
-        {
-            Intent i = new Intent(this,SynchronizeActivity.class);
-            this.startActivity(i);
-        }
-    }
+
+
 
     private void connect()
     {
@@ -77,18 +65,16 @@ public class Login extends AppCompatActivity implements NetworksCallbacks{
 
     private void login(String login,String password)
     {
-        LogInTask loginTask = new LogInTask(bufferedReader,writer,login,password,this);
+        LogInTask loginTask = new LogInTask(login,password,this);
         loginTask.execute();
     }
 
 
     @Override
-    public void connectResult(BufferedReader reader,PrintWriter writer)
+    public void connectResult(BufferedReader reader,PrintWriter writer,Socket socket)
     {
         if(reader!= null && writer!=null) {
-            this.bufferedReader = reader;
-            this.writer = writer;
-            loginStatus = true;
+            User.setParameters(socket,reader,writer);
         }else
         {
             // to do when connect failed
@@ -101,15 +87,28 @@ public class Login extends AppCompatActivity implements NetworksCallbacks{
 
         if(result) {
 
-            loginStatus = true;
+            User.setLoginStatus(true);
             Intent i = new Intent(this,SynchronizeActivity.class);
             this.startActivity(i);
 
         }
-        else loginStatus = false;
+        else
+        {
+            User.setLoginStatus(false);
+            Toast.makeText(getApplicationContext(),
+                    "Logowanie nie powiodło się", Toast.LENGTH_SHORT).show();
+        }
 
     }
 
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if(User.getLoginStatus())
+        {
+            this.finish();
+        }
+    }
 }
 
 class ConnectToServer extends AsyncTask<String,Integer,Void>
@@ -149,7 +148,7 @@ class ConnectToServer extends AsyncTask<String,Integer,Void>
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        callback.connectResult(bufferedReader,writer);
+        callback.connectResult(bufferedReader,writer,socket);
     }
 }
 
@@ -166,10 +165,10 @@ class LogInTask extends AsyncTask<Void,Void,Void>
 
     private String loginStatus = null;
 
-    public LogInTask(BufferedReader reader,PrintWriter writer,String login, String password,NetworksCallbacks callback)
+    public LogInTask(String login, String password,NetworksCallbacks callback)
     {
-        this.bufferedReader = reader;
-        this.writer = writer;
+        this.bufferedReader = User.getSocketReader();
+        this.writer = User.getSocketWriter();
         this.login = login;
         this.password = password;
         this.callback = callback;
