@@ -170,7 +170,6 @@ public class Add_meal extends AppCompatActivity {
 
     }
 
-
     private void loadAndResizeImage()
     {
         CropImage.activity().setAspectRatio(3,2).setFixAspectRatio(true).start(this);

@@ -34,7 +34,8 @@
         <activity android:name=".Add_meal" />
         <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity" />
         <activity android:name=".Login" />
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".SynchronizeActivity"></activity>
     </application>
 
 </manifest>

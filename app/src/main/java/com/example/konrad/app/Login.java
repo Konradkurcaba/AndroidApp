@@ -1,25 +1,45 @@
 package com.example.konrad.app;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Login extends AppCompatActivity implements NetworksCallbacks{
 
-    private Socket socket;
+
     private Button loginButton;
+    private Button syncButton;
     private static final int SERVERPORT = 2500;
     private static final String SERVERIP = "10.0.2.2";
+    private boolean loginStatus = false;
+    private static  BufferedReader bufferedReader;
+    private static PrintWriter writer;
 
+
+    public static BufferedReader getBufferedReader() {
+        return bufferedReader;
+    }
+
+    public static PrintWriter getWriter() {
+        return writer;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,12 +51,22 @@ public class Login extends AppCompatActivity implements NetworksCallbacks{
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            login();
-            }
-        });
+                login("Antoni", "Dzik");
+            }});
 
 
         connect();
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        if(loginStatus)
+        {
+            Intent i = new Intent(this,SynchronizeActivity.class);
+            this.startActivity(i);
+        }
     }
 
     private void connect()
@@ -45,16 +75,20 @@ public class Login extends AppCompatActivity implements NetworksCallbacks{
         connectTask.execute();
     }
 
-    private void login()
+    private void login(String login,String password)
     {
-        LogInTask loginTask = new LogInTask(socket);
+        LogInTask loginTask = new LogInTask(bufferedReader,writer,login,password,this);
         loginTask.execute();
     }
 
-    public void connectResult(Socket socket)
+
+    @Override
+    public void connectResult(BufferedReader reader,PrintWriter writer)
     {
-        if(socket != null) {
-            this.socket = socket;
+        if(reader!= null && writer!=null) {
+            this.bufferedReader = reader;
+            this.writer = writer;
+            loginStatus = true;
         }else
         {
             // to do when connect failed
@@ -62,6 +96,19 @@ public class Login extends AppCompatActivity implements NetworksCallbacks{
         }
     }
 
+    @Override
+    public void loginResult(boolean result) {
+
+        if(result) {
+
+            loginStatus = true;
+            Intent i = new Intent(this,SynchronizeActivity.class);
+            this.startActivity(i);
+
+        }
+        else loginStatus = false;
+
+    }
 
 }
 
@@ -72,6 +119,8 @@ class ConnectToServer extends AsyncTask<String,Integer,Void>
     private final String SERVERIP;
     private final int SERVERPORT;
     private final NetworksCallbacks callback;
+    private BufferedReader bufferedReader;
+    private PrintWriter writer;
 
     ConnectToServer(String serverIp,int serverPort,NetworksCallbacks callback)
     {
@@ -85,9 +134,9 @@ class ConnectToServer extends AsyncTask<String,Integer,Void>
     protected Void doInBackground(String... strings) {
         try {
 
-
             socket = new Socket(SERVERIP, 2500);
-
+            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new PrintWriter(socket.getOutputStream(),true);
 
         }catch(IOException e)
         {
@@ -100,21 +149,30 @@ class ConnectToServer extends AsyncTask<String,Integer,Void>
     @Override
     protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        callback.connectResult(socket);
+        callback.connectResult(bufferedReader,writer);
     }
 }
 
 class LogInTask extends AsyncTask<Void,Void,Void>
 {
 
-    Socket socket;
-
-    BufferedReader bufferedReader;
-    PrintWriter writer;
 
 
-    public LogInTask(Socket socket) {
-        this.socket = socket;
+    private BufferedReader bufferedReader;
+    private PrintWriter writer;
+    private String login;
+    private String password;
+    private NetworksCallbacks callback;
+
+    private String loginStatus = null;
+
+    public LogInTask(BufferedReader reader,PrintWriter writer,String login, String password,NetworksCallbacks callback)
+    {
+        this.bufferedReader = reader;
+        this.writer = writer;
+        this.login = login;
+        this.password = password;
+        this.callback = callback;
     }
 
     @Override
@@ -122,16 +180,18 @@ class LogInTask extends AsyncTask<Void,Void,Void>
 
         try {
 
-            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            writer = new PrintWriter(socket.getOutputStream(),true);
-
             writer.println("LOGIN");
+            writer.println(login);
+            writer.println(password);
+
+            loginStatus = bufferedReader.readLine();
 
 
 
         }catch (IOException e)
         {
             System.out.print(e.toString());
+
         }
         catch(Exception e)
         {
@@ -140,4 +200,13 @@ class LogInTask extends AsyncTask<Void,Void,Void>
 
         return null;
     }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        if(loginStatus.equals("OK")) callback.loginResult(true);
+        else callback.loginResult(false);
+
+    }
 }
+

@@ -17,7 +17,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION=4;
+    private static final int DATABASE_VERSION=5;
     private static final String DATABASE_NAME = "diets_db";
 
 
@@ -26,10 +26,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
     }
-
     @Override
     public void onCreate(SQLiteDatabase db) {
         String create = "CREATE TABLE Diets(id INTEGER PRIMARY KEY AUTOINCREMENT,tittle TEXT,summary TEXT,description TEXT,dateTimeStamp LONG,imagePath String)";
+        db.execSQL(create);
+        create = "CREATE TABLE Users(id INTEGER PRIMARY KEY AUTOINCREMENT,login TEXT,password TEXT)";
         db.execSQL(create);
     }
 
@@ -59,22 +60,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void getDiets(List<Diet> list)
-    {
+        {
 
-        list.clear();
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query("Diets",new String[]{"id","tittle","summary","description","dateTimeStamp","imagePath"},null,null,null,null,null);
-        if(cursor != null && cursor.moveToFirst() ) {
+            list.clear();
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.query("Diets",new String[]{"id","tittle","summary","description","dateTimeStamp","imagePath"},null,null,null,null,null);
+            if(cursor != null && cursor.moveToFirst() ) {
 
-            do {
-                Diet diet = new Diet(cursor.getString(1),cursor.getString(2),cursor.getString(3),
-                        cursor.getLong(4),cursor.getString(5));
-                list.add(diet);
-                 diet.setId(cursor.getInt(0));
+                do {
+                    Diet diet = new Diet(cursor.getString(1),cursor.getString(2),cursor.getString(3),
+                            cursor.getLong(4),cursor.getString(5));
+                    list.add(diet);
+                    diet.setId(cursor.getInt(0));
 
-            } while (cursor.moveToNext());
+                } while (cursor.moveToNext());
 
-        }
+            }
 
         Collections.sort(list,(Diet firstMeal, Diet secondMeal) -> {
 
@@ -127,6 +128,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         });
 
     }
+    public List getAllMealsIDs()
+    {
+        List idsList = new ArrayList<Integer>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query("Diets",new String[]{"id"},null,null,null,null,null);
+        if(cursor != null && cursor.moveToFirst() ) {
+
+            do {
+                Integer id = cursor.getInt(0);
+                idsList.add(id);
+            } while (cursor.moveToNext());
+        }
+        return idsList;
+    }
+
+    public void addMealsFromServer(List<Diet> meals)
+    {
+        SQLiteDatabase db = this.getWritableDatabase();
+        for(Diet meal : meals)
+        {
+            ContentValues values = new ContentValues();
+            values.put("id",meal.getId());
+            values.put("tittle",meal.getTitle());
+            values.put("summary",meal.getSummary());
+            values.put("description",meal.getDesctiption());
+            values.put("dateTimeStamp",meal.getMealDate());
+            values.put("imagePath", meal.getImagePath());
+            db.insert("Diets",null,values);
+
+        }
+    }
 
     private int mealToIntValueConversion(String title)
     {
@@ -153,23 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return mealIntValue;
     }
-    private long dateToMilliseconds(String date)
-    {
 
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        try
-        {
-            Date mDate = sdf.parse(date);
-            long timeInMilliseconds = mDate.getTime();
-            System.out.println("Date in milli :: " + timeInMilliseconds);
-            return timeInMilliseconds;
-        }
-        catch (ParseException e)
-        {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 
-        return 0;
-    }
+
 }
